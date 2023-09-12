@@ -19,6 +19,7 @@
 
 # Hardcoded paths for standalone version identical to CMSSW 11_3_X
 # These are ignored if either CONDA=1 or LCG=1 is set
+LCG=1
 BOOST = /cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/boost/1.75.0-ljfedo
 VDT   = /cvmfs/cms.cern.ch/slc7_amd64_gcc900/cms/vdt/0.4.0-ghbfee
 GSL = /cvmfs/cms.cern.ch/slc7_amd64_gcc900/external/gsl/2.6-ljfedo

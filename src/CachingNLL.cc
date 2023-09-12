@@ -908,6 +908,24 @@ void
 cacheutils::CachingSimNLL::setup_() 
 {
     // Allow runtime-flag to switch off logEvalErrors
+      runtimedef::set("OPTIMIZE_BOUNDS", 1);
+      runtimedef::set("ADDNLL_RECURSIVE", 1);
+      runtimedef::set("ADDNLL_GAUSSNLL", 1);
+      runtimedef::set("ADDNLL_HISTNLL", 1);
+      runtimedef::set("ADDNLL_CBNLL", 1);
+      runtimedef::set("TMCSO_AdaptivePseudoAsimov", 1);
+      // Optimization for bare RooFit likelihoods (--optimizeSimPdf=0)
+      runtimedef::set("MINIMIZER_optimizeConst", 2); 
+      runtimedef::set("MINIMIZER_rooFitOffset", 1); 
+      // Optimization for ATLAS HistFactory likelihoods
+      runtimedef::set("ADDNLL_ROOREALSUM_FACTOR",1);
+      runtimedef::set("ADDNLL_ROOREALSUM_NONORM",1);
+      runtimedef::set("ADDNLL_ROOREALSUM_BASICINT",1);
+      runtimedef::set("ADDNLL_ROOREALSUM_KEEPZEROS",1);
+      runtimedef::set("ADDNLL_PRODNLL",1);
+      runtimedef::set("ADDNLL_HFNLL",1);
+      runtimedef::set("ADDNLL_HISTFUNCNLL",1);
+      runtimedef::set("ADDNLL_ROOREALSUM_CHEAPPROD",1);
     noDeepLEE_ = runtimedef::get("SIMNLL_NO_LEE");
 
     //RooAbsPdf *pdfclone = runtimedef::get("SIMNLL_CLONE") ? pdfOriginal_  : utils::fullClonePdf(pdfOriginal_, piecesForCloning_);
@@ -1052,6 +1070,7 @@ cacheutils::CachingSimNLL::evaluate() const
 #ifdef DEBUG_CACHE
     PerfCounter::add("CachingSimNLL::evaluate called");
 #endif
+    //std::cout << "CachingSimNLL::evaluate called" << std::endl;
     static bool gentleNegativePenalty_ = runtimedef::get("GENTLE_LEE");
     DefaultAccumulator<double> ret = 0;
     unsigned idx = 0;
@@ -1125,10 +1144,12 @@ cacheutils::CachingSimNLL::setData(const RooAbsData &data)
     //std::cout << "combined data has " << data.numEntries() << " dataset entries (sumw " << data.sumEntries() << ", weighted " << data.isWeighted() << ")" << std::endl;
     //utils::printRAD(&data);
     //dataSets_.reset(dataOriginal_->split(pdfOriginal_->indexCat(), true));
+    /*
     if (!(RooCategory*)data.get()->find("CMS_channel")) { 
     	throw  std::logic_error("Error: no category in dataset. You should try to recreate your datacard as a Fake shape -- combineCards.py mycard.txt -S > myshapecard.txt OR rerun with option --forceRecreateNLL");
 	assert(0);
     }
+    */
     splitWithWeights(*dataOriginal_, pdfOriginal_->indexCat(), true);
     for (int ib = 0, nb = pdfs_.size(); ib < nb; ++ib) {
         CachingAddNLL *canll = pdfs_[ib];
