@@ -192,7 +192,7 @@ The following are options which define how the toys will be generated,
 
    * `--toysNoSystematics` the nuisance parameters in each toy are *not* randomised when generating the toy datasets - i.e their nominal values are used to generate the data. Note that for methods which profile (fit) the nuisances, the parameters are still floating when evaluating the likelihood.
 
-   * `--toysFrequentist` the nuisance parameters in each toy are set to their nominal values which are obtained *after fitting first to the data*, with POIs fixed, before generating the data. For evaluating likelihoods, the constraint terms are instead randomised within their Gaussian constraint pdfs around the post-fit nuisance parameter values.
+   * `--toysFrequentist` the nuisance parameters in each toy are set to their nominal values which are obtained *after fitting first to the data*, with POIs fixed, before generating the data. For evaluating likelihoods, the constraint terms are instead randomised within their pdfs around the post-fit nuisance parameter values.
 
 If you are using `toysFrequentist`, be aware that the values set by `--setParameters` will be *ignored* for the toy generation as the *post-fit* values will instead be used (except for any parameter which is also a parameter of interest). You can override this behaviour and choose the nominal values for toy generation for any parameter by adding the option `--bypassFrequentistFit` which will skip the initial fit to data or by loading a snapshot (see below).
 
@@ -316,10 +316,10 @@ When the `--dry-run` option is removed each command will be run in sequence.
 
 #### Grid submission
 
-Submission to the grid with `crab3` works in a similar way. Before doing so ensure that the `crab3` environment has been sourced, then for compatibility reasons source the CMSSW environment again. We will use the example of generating a grid of test-statistic distributions for limits.
+Submission to the grid with `crab3` works in a similar way. Before doing so ensure that the `crab3` environment has been sourced in addition to the  CMSSW environment. We will use the example of generating a grid of test-statistic distributions for limits.
 
 ```sh
-$ source /cvmfs/cms.cern.ch/crab3/crab.sh; cmsenv
+$ cmsenv; source /cvmfs/cms.cern.ch/crab3/crab.sh
 $ combineTool.py -d htt_mt.root -M HybridNew --LHCmode LHC-limits --clsAcc 0 -T 2000 -s -1 --singlePoint 0.2:2.0:0.05 --saveToys --saveHybridResult -m 125 --job-mode crab3 --task-name grid-test --custom-crab custom_crab.py
 ```
 
