@@ -907,7 +907,7 @@ cacheutils::CachingSimNLL::~CachingSimNLL()
 void
 cacheutils::CachingSimNLL::setup_() 
 {
-      runtimedef::set("NO_ADDNLL_FASTEXIT",0);
+      //runtimedef::set("NO_ADDNLL_FASTEXIT",0);
       runtimedef::set("ADDNLL_RECURSIVE", 1);
       runtimedef::set("ADDNLL_GAUSSNLL", 1);
       runtimedef::set("ADDNLL_HISTNLL", 1);
@@ -915,18 +915,18 @@ cacheutils::CachingSimNLL::setup_()
       runtimedef::set("ADDNLL_PRODNLL",1);
       runtimedef::set("ADDNLL_HFNLL",1);
       runtimedef::set("ADDNLL_HISTFUNCNLL",1);
-      runtimedef::set("ADDNLL_MULTINLL",1);
+      //runtimedef::set("ADDNLL_MULTINLL",1);
       // Optimization for ATLAS HistFactory likelihoods
       runtimedef::set("ADDNLL_ROOREALSUM_FACTOR",1);
       runtimedef::set("ADDNLL_ROOREALSUM_NONORM",1);
       runtimedef::set("ADDNLL_ROOREALSUM_BASICINT",1);
       runtimedef::set("ADDNLL_ROOREALSUM_KEEPZEROS",1);
       runtimedef::set("ADDNLL_ROOREALSUM_CHEAPPROD",1);
-      runtimedef::set("ADDNLL_ROOREALSUM_PRUNECONST",1);
+      //runtimedef::set("ADDNLL_ROOREALSUM_PRUNECONST",1);
 
       //runtimedef::set("SIMNLL_FASTGAUSS",0);
       //runtimedef::set("SIMNLL_GROUPCONSTRAINTS",10);
-      runtimedef::set("CACHINGPDF_NOCLONE",1);
+      //runtimedef::set("CACHINGPDF_NOCLONE",1);
       //runtimedef::set("CACHINGPDF_NOCHEAPCLONE",1);
       //runtimedef::set("CACHINGPDF_DIRECT",1);
       //runtimedef::set("ADDNLL_VERBOSE_CACHING",1);
