@@ -700,9 +700,9 @@ cacheutils::CachingAddNLL::evaluate() const
                 ret -= 25;  // add a penalty (negative since we flip 'ret' afterwards)
                 continue;
             }
-            std::cout << "WARNING: underflow to " << *its << " in " << pdf_->GetName() << " for bin " << its-bgs << ", weight " << weights_[its-bgs] << std::endl; 
+            //std::cout << "WARNING: underflow to " << *its << " in " << pdf_->GetName() << " for bin " << its-bgs << ", weight " << weights_[its-bgs] << std::endl; 
             if (!CachingSimNLL::noDeepLEE_) logEvalError("Number of events is negative or error"); else CachingSimNLL::hasError_ = true;
-            if (fastExit_) { std::cout << "FASTEXIT from " << pdf_->GetName() << std::endl; return 9e9; }
+            if (fastExit_) { /*std::cout << "FASTEXIT from " << pdf_->GetName() << std::endl;*/ return 9e9; }
             else *its = 1;
         }
     }
@@ -907,25 +907,33 @@ cacheutils::CachingSimNLL::~CachingSimNLL()
 void
 cacheutils::CachingSimNLL::setup_() 
 {
-    // Allow runtime-flag to switch off logEvalErrors
-      runtimedef::set("OPTIMIZE_BOUNDS", 1);
+      runtimedef::set("NO_ADDNLL_FASTEXIT",0);
       runtimedef::set("ADDNLL_RECURSIVE", 1);
       runtimedef::set("ADDNLL_GAUSSNLL", 1);
       runtimedef::set("ADDNLL_HISTNLL", 1);
       runtimedef::set("ADDNLL_CBNLL", 1);
-      runtimedef::set("TMCSO_AdaptivePseudoAsimov", 1);
-      // Optimization for bare RooFit likelihoods (--optimizeSimPdf=0)
-      runtimedef::set("MINIMIZER_optimizeConst", 2); 
-      runtimedef::set("MINIMIZER_rooFitOffset", 1); 
+      runtimedef::set("ADDNLL_PRODNLL",1);
+      runtimedef::set("ADDNLL_HFNLL",1);
+      runtimedef::set("ADDNLL_HISTFUNCNLL",1);
+      runtimedef::set("ADDNLL_MULTINLL",1);
       // Optimization for ATLAS HistFactory likelihoods
       runtimedef::set("ADDNLL_ROOREALSUM_FACTOR",1);
       runtimedef::set("ADDNLL_ROOREALSUM_NONORM",1);
       runtimedef::set("ADDNLL_ROOREALSUM_BASICINT",1);
       runtimedef::set("ADDNLL_ROOREALSUM_KEEPZEROS",1);
-      runtimedef::set("ADDNLL_PRODNLL",1);
-      runtimedef::set("ADDNLL_HFNLL",1);
-      runtimedef::set("ADDNLL_HISTFUNCNLL",1);
       runtimedef::set("ADDNLL_ROOREALSUM_CHEAPPROD",1);
+      runtimedef::set("ADDNLL_ROOREALSUM_PRUNECONST",1);
+
+      //runtimedef::set("SIMNLL_FASTGAUSS",0);
+      //runtimedef::set("SIMNLL_GROUPCONSTRAINTS",10);
+      runtimedef::set("CACHINGPDF_NOCLONE",1);
+      //runtimedef::set("CACHINGPDF_NOCHEAPCLONE",1);
+      //runtimedef::set("CACHINGPDF_DIRECT",1);
+      //runtimedef::set("ADDNLL_VERBOSE_CACHING",1);
+
+      runtimedef::set("REMOVE_CONSTANT_ZERO_POINT",1);
+      
+    // Allow runtime-flag to switch off logEvalErrors
     noDeepLEE_ = runtimedef::get("SIMNLL_NO_LEE");
 
     //RooAbsPdf *pdfclone = runtimedef::get("SIMNLL_CLONE") ? pdfOriginal_  : utils::fullClonePdf(pdfOriginal_, piecesForCloning_);
@@ -1062,7 +1070,7 @@ cacheutils::CachingSimNLL::setup_()
 Double_t 
 cacheutils::CachingSimNLL::evaluate() const 
 {
-    // LAUNCH_FUNCTION_TIMER(__timer__, __token__)
+    LAUNCH_FUNCTION_TIMER(__timer__, __token__)
     TRACE_POINT(params_)
 #ifdef TRACE_NLL_EVAL_COUNT
     ::CachingSimNLLEvalCount++;
@@ -1311,7 +1319,7 @@ void cacheutils::CachingSimNLL::setMaskConstraints(bool flag) {
     double nllBefore = evaluate();
     maskConstraints_ = flag;
     double nllAfter = evaluate();
-    maskingOffset_ += (nllBefore - nllAfter);
+    //maskingOffset_ += (nllBefore - nllAfter);
     //printf("CachingSimNLL: setMaskConstraints(%d): nll before %.12g, nll after %.12g (diff %.12g), new maskingOffset %.12g, check = %.12g\n",
     //            int(flag), nllBefore, nllAfter, (nllBefore-nllAfter), maskingOffset_, evaluate() - nllBefore);
 }
@@ -1334,14 +1342,14 @@ void cacheutils::CachingSimNLL::setMaskNonDiscreteChannels(bool mask) {
                     internalMasks_[idx] = true; 
                     activeParameters_.add((*it)->params(), /*silent=*/true); 
                     activeCatParameters_.add((*it)->catParams(), /*silent=*/true); 
-                    std::cout << "Enabling channel " << (*it)->GetName() << " that depends on non-const category " << cat->GetName() << std::endl;
+                    //std::cout << "Enabling channel " << (*it)->GetName() << " that depends on non-const category " << cat->GetName() << std::endl;
                     break;
                 }
             }
         }
     }
     double nllAfter = evaluate();
-    maskingOffset_ += (nllBefore - nllAfter);
+    //maskingOffset_ += (nllBefore - nllAfter);
     //printf("CachingSimNLL: setMaskNonDiscreteChannels(%d): nll before %.12g, nll after %.12g (diff %.12g), new maskingOffset %.12g, check = %.12g\n",
     //            int(mask), nllBefore, nllAfter, (nllBefore-nllAfter), maskingOffset_, evaluate() - nllBefore);
     
